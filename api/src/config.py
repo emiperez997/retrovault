@@ -1,12 +1,13 @@
 from functools import lru_cache
 
+from pydantic import Field
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
 class Settings(BaseSettings):
     model_config = SettingsConfigDict(env_file=".env", extra="ignore")
 
-    database_url: str
+    database_url: str = Field(default=...)
     cors_origins: list[str] = ["http://localhost:4200"]
 
     # Fase 1: Usuario hardcodeado (Se reemplaza por auth en fase 5)
