@@ -1,0 +1,26 @@
+services:
+  db:
+    image: docker.io/library/postgres:16
+    container_name: retrovault-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: retrovault
+      POSTGRES_PASSWORD: retrovault
+      POSTGRES_DB: retrovault
+      # Fuerza colación determinista: sin esto el orden de los títulos
+      # puede variar entre tu máquina y el server de producción.
+      POSTGRES_INITDB_ARGS: "--locale=C --encoding=UTF8"
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./db/init:/docker-entrypoint-initdb.d:ro,z
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U retrovault -d retrovault"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+
+volumes:
+  pgdata:
