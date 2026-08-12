@@ -1,19 +1,24 @@
 from pydantic import BaseModel, ConfigDict
+from pydantic.alias_generators import to_camel
 
 from src.domain.catalog.models import RegionCode
 
 
-class PlatformRead(BaseModel):
-    model_config = ConfigDict(from_attributes=True)
+class CamelModel(BaseModel):
+    model_config = ConfigDict(
+        alias_generator=to_camel,
+        populate_by_name=True,
+        from_attributes=True,
+    )
 
+
+class PlatformRead(CamelModel):
     id: int
     slug: str
     name: str
 
 
-class GameRead(BaseModel):
-    model_config = ConfigDict(from_attributes=True)
-
+class GameRead(CamelModel):
     id: int
     slug: str
     title: str
@@ -23,7 +28,7 @@ class GameRead(BaseModel):
     platform: PlatformRead
 
 
-class GamePage(BaseModel):
+class GamePage(CamelModel):
     items: list[GameRead]
     total: int
     page: int
