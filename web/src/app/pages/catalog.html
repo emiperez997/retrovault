@@ -1,0 +1,141 @@
+<section class="hero">
+  <div class="hero-copy">
+    <p class="eyebrow"><span></span> TU PRÓXIMA PARTIDA EMPIEZA ACÁ</p>
+    <h1>Hay juegos que<br />nunca se <em>guardan.</em></h1>
+    <p class="hero-description">
+      Redescubrí los clásicos. Organizá tu colección.<br />Siempre hay una historia por volver a
+      jugar.
+    </p>
+    <a class="text-link" routerLink="/coleccion"
+      >Explorar mi colección <span aria-hidden="true">↗</span></a
+    >
+  </div>
+  <div class="hero-art" aria-hidden="true">
+    <div class="sun"></div>
+    <div class="horizon"></div>
+    <div class="hero-cartridge">
+      <div class="hero-cart-top"></div>
+      <div class="hero-label">
+        <span>THE CLASSICS NEVER DIE</span><strong>PRESS<br /><i>START</i></strong>
+        <div>✦ &nbsp; EST. 1996 &nbsp; ✦</div>
+      </div>
+      <div class="hero-cart-base"></div>
+    </div>
+    <span class="hero-coordinate">35° 40′ N &nbsp; / &nbsp; BACK TO THE GOOD TIMES</span
+    ><span class="hero-star star-one">✦</span><span class="hero-star star-two">+</span>
+  </div>
+</section>
+<section class="catalog-section" aria-labelledby="catalog-title">
+  <div class="section-heading">
+    <div>
+      <p class="eyebrow">EL ARCHIVO</p>
+      <h2 id="catalog-title">Encontrá tu próximo clásico<span class="pink">.</span></h2>
+    </div>
+    <span class="section-counter mono"
+      >{{ loading() ? '…' : result().total }} JUEGOS ENCONTRADOS</span
+    >
+  </div>
+  <form class="search-bar" role="search" (ngSubmit)="search()">
+    <label class="search-field"
+      ><span aria-hidden="true">⌕</span><span class="sr-only">Buscar juegos</span
+      ><input
+        name="search"
+        [(ngModel)]="searchText"
+        placeholder="Buscá un juego, una aventura, un recuerdo…"
+        maxlength="200"
+        type="search" /></label
+    ><button class="button primary" type="submit">Buscar <span aria-hidden="true">↗</span></button>
+  </form>
+  @if (query()) {
+    <div class="search-summary">
+      Resultados para «{{ query() }}» <a routerLink="/catalogo">Limpiar búsqueda ×</a>
+    </div>
+  }
+  @if (store.error()) {
+    <div class="notice" role="alert">
+      <span
+        >Podés explorar el catálogo, pero no pudimos cargar tu colección. {{ store.error() }}</span
+      ><button class="button small" (click)="store.load()" [disabled]="store.loading()">
+        Reintentar colección
+      </button>
+    </div>
+  }
+  @if (loading()) {
+    <div class="game-grid" aria-label="Cargando catálogo" aria-busy="true">
+      @for (i of skeletons; track i) {
+        <div class="skeleton-card">
+          <div></div>
+          <span></span><span></span>
+        </div>
+      }
+    </div>
+  } @else if (error()) {
+    <div class="empty-state" role="alert">
+      <span class="empty-symbol">!</span>
+      <h3>Se pausó la partida</h3>
+      <p>{{ error() }}</p>
+      <button class="button primary" (click)="retry()">Volver a intentar</button>
+    </div>
+  } @else if (!result().items.length) {
+    <div class="empty-state">
+      <span class="empty-symbol">⌕</span>
+      <h3>
+        {{
+          query()
+            ? 'Ese clásico todavía no aparece'
+            : result().total
+              ? 'Esta página no tiene juegos'
+              : 'El archivo está por empezar'
+        }}
+      </h3>
+      <p>
+        {{
+          query()
+            ? 'Probá con otro título o con una parte del nombre.'
+            : result().total
+              ? 'Volvé a la primera página para explorar el catálogo.'
+              : 'Todavía no hay juegos cargados en el catálogo.'
+        }}
+      </p>
+      @if (query() || result().total) {
+        <a class="button" routerLink="/catalogo">Ver catálogo completo</a>
+      }
+    </div>
+  } @else {
+    <div class="game-grid">
+      @for (game of result().items; track game.id) {
+        <app-game-card [game]="game" />
+      }
+    </div>
+  }
+  @if (!loading() && !error() && result().total > 0) {
+    <nav class="pagination" aria-label="Páginas del catálogo">
+      <span class="mono">PÁGINA {{ result().page }} DE {{ totalPages }}</span>
+      <div>
+        <button
+          class="button small"
+          [disabled]="result().page <= 1"
+          (click)="page(result().page - 1)"
+        >
+          ← Anterior</button
+        ><button
+          class="button small"
+          [disabled]="result().page >= totalPages"
+          (click)="page(result().page + 1)"
+        >
+          Siguiente →
+        </button>
+      </div>
+    </nav>
+  }
+</section>
+<aside class="archive-note">
+  <span class="archive-note-icon" aria-hidden="true">✳</span>
+  <div>
+    <h3>Más que una lista. Tu historia jugando.</h3>
+    <p>
+      Lo que terminaste, lo que quedó pendiente y lo que siempre quisiste tener. Todo en un lugar.
+    </p>
+  </div>
+  <span class="mono">CONTINUE? &nbsp; <span class="pink">YES.</span></span>
+</aside>

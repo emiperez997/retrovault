@@ -1,0 +1,21 @@
+<a class="skip-link" href="#main">Saltar al contenido</a>
+<header class="site-header">
+  <a class="brand" routerLink="/catalogo" aria-label="RetroVault, inicio"
+    ><span class="brand-icon" aria-hidden="true">R<span>V</span></span
+    ><span>retro<span class="brand-accent">vault</span><small>KEEP THE GAME ALIVE</small></span></a
+  >
+  <nav aria-label="Navegación principal">
+    <a routerLink="/catalogo" routerLinkActive="active">Catálogo</a
+    ><a routerLink="/coleccion" routerLinkActive="active"
+      >Mi colección <span class="nav-count">{{ collection.items().length }}</span></a
+    >
+  </nav>
+  <span class="dev-badge"><span aria-hidden="true"></span> Modo desarrollo</span>
+</header>
+<main id="main" tabindex="-1"><router-outlet /></main>
+<footer class="site-footer">
+  <a class="footer-brand" routerLink="/catalogo">retrovault<span>®</span></a>
+  <p>Los juegos cambian. Las ganas de volver, no.</p>
+  <span class="mono">INSERT COIN. KEEP PLAYING.</span>
+</footer>
+<div class="dev-note">Versión local · La colección usa el usuario de desarrollo compartido.</div>

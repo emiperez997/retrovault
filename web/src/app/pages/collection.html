@@ -1,0 +1,133 @@
+<div class="collection-header">
+  <div>
+    <p class="eyebrow">TU ARCHIVO PERSONAL</p>
+    <h1>Cada juego, <em>una historia.</em></h1>
+    <p class="muted">Tus pendientes, tus favoritos y las partidas que dejaron huella.</p>
+  </div>
+  <a class="button primary" routerLink="/catalogo">+ Explorar catálogo</a>
+</div>
+<div class="collection-stats">
+  <div>
+    <span class="mono">EN TU COLECCIÓN</span
+    ><strong>{{ store.items().length.toString().padStart(2, '0') }}<span>juegos</span></strong>
+  </div>
+  <div>
+    <span class="mono">EN PARTIDA</span
+    ><strong>{{ playing().toString().padStart(2, '0') }}<span>jugando</span></strong>
+  </div>
+  <div>
+    <span class="mono">CRÉDITOS FINALES</span
+    ><strong>{{ completed().toString().padStart(2, '0') }}<span>completados</span></strong>
+  </div>
+</div>
+<div class="collection-toolbar">
+  <h2>Mi colección<span class="pink">.</span></h2>
+  <label
+    >Mostrar
+    <select [ngModel]="filter()" (ngModelChange)="filter.set($event)">
+      <option value="">Todos los estados</option>
+      @for (s of statuses; track s.value) {
+        <option [value]="s.value">{{ s.label }}</option>
+      }
+    </select></label
+  >
+</div>
+@if (message()) {
+  <p class="success-message" role="status">{{ message() }}</p>
+}
+@if (error()) {
+  <p class="inline-error" role="alert">{{ error() }}</p>
+}
+@if (store.loading()) {
+  <div class="empty-state" aria-busy="true"><p>Cargando tu colección…</p></div>
+} @else if (store.error()) {
+  <div class="empty-state" role="alert">
+    <h2>No pudimos cargar tu colección</h2>
+    <p>{{ store.error() }}</p>
+    <button class="button primary" (click)="store.load()">Volver a intentar</button>
+  </div>
+} @else if (!visible().length) {
+  <div class="empty-state">
+    <span class="empty-symbol">✦</span>
+    <h2>
+      {{ filter() ? 'Todavía no hay juegos con este estado' : 'Tu historia empieza con un juego' }}
+    </h2>
+    <p>
+      {{
+        filter()
+          ? 'Elegí otro estado para seguir explorando tu colección.'
+          : 'Buscá ese clásico que tenés pendiente y agregalo a tu colección.'
+      }}
+    </p>
+    @if (filter()) {
+      <button class="button" (click)="filter.set('')">Ver todos</button>
+    } @else {
+      <a class="button primary" routerLink="/catalogo">Explorar catálogo ↗</a>
+    }
+  </div>
+} @else {
+  <div class="collection-list">
+    @for (item of visible(); track item.id) {
+      <article class="collection-row" [attr.aria-label]="item.game.title">
+        <a
+          class="collection-thumb"
+          [routerLink]="['/juegos', item.game.id]"
+          [attr.aria-label]="'Ver ' + item.game.title"
+          ><app-game-art [game]="item.game"
+        /></a>
+        <div class="collection-title">
+          <span class="platform-pill" [attr.data-platform]="item.game.platform.slug">{{
+            item.game.platform.name
+          }}</span>
+          <h3>
+            <a [routerLink]="['/juegos', item.game.id]">{{ item.game.title }}</a>
+          </h3>
+          <span class="mono muted">{{ item.game.releaseYear ?? '—' }}</span>
+        </div>
+        <div class="collection-actions">
+          <label class="status-field"
+            >Estado<select
+              [value]="item.status"
+              (change)="change(item, $event)"
+              [disabled]="store.busy().includes(item.game.id)"
+              [attr.aria-label]="'Estado de ' + item.game.title"
+            >
+              @for (s of statuses; track s.value) {
+                <option [value]="s.value" [selected]="s.value === item.status">
+                  {{ s.label }}
+                </option>
+              }
+            </select></label
+          >
+          @if (confirming() === item.id) {
+            <div class="remove-confirm">
+              <span>¿Quitar de la colección?</span
+              ><button
+                class="button small danger"
+                (click)="remove(item)"
+                [disabled]="store.busy().includes(item.game.id)"
+              >
+                Sí, quitar</button
+              ><button
+                class="button small"
+                (click)="confirming.set(null)"
+                [disabled]="store.busy().includes(item.game.id)"
+              >
+                Cancelar
+              </button>
+            </div>
+          } @else {
+            <button
+              class="remove-button"
+              (click)="confirming.set(item.id)"
+              [disabled]="store.busy().includes(item.game.id)"
+              [attr.aria-label]="'Quitar ' + item.game.title"
+            >
+              Quitar
+            </button>
+          }
+        </div>
+      </article>
+    }
+  </div>
+}

@@ -1,0 +1,5 @@
+simulation: retrovault-frontend
+routing: path
+mocks:
+  - routeKey: retrovault
+    path: ../mocks/retrovault/config.yaml

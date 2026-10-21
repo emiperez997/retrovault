@@ -1,0 +1,9 @@
+node_modules/
+.tmp/
+web/dist/
+web/.angular/
+web/test-results/
+web/playwright-report/
+postman/.dependencies/
+postman/*.ndjson
+postman/*.err

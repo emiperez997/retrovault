@@ -1,0 +1,10 @@
+simulation: retrovault-frontend-error
+routing: path
+mocks:
+  - routeKey: retrovault
+    path: ../mocks/retrovault/config.yaml
+    scenarios:
+      - overrides:
+          conditions:
+            error:
+              status_code: 503

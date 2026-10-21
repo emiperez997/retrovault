@@ -1,0 +1,11 @@
+version: 1
+name: retrovault
+slug: retrovault
+protocol: http
+port: 4901
+description: Local catalog and collection mock based on the FastAPI schemas and seed.
+interceptRequests: true
+scenarios:
+  - name: default
+    path: ./default.js
+    default: true
